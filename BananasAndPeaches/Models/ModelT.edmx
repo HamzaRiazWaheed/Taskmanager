@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TaskListDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="alreadyGot" Type="bit" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="19" Scale="4" />
+          <Property Name="taskStepId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TaskStep">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="timeRequired" Type="decimal" Precision="6" Scale="2" />
+          <Property Name="isDone" Type="bit" Nullable="false" />
+          <Property Name="taskId" Type="int" Nullable="false" />
+          <Property Name="stepPriority" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TaskStepTool">
+          <Key>
+            <PropertyRef Name="taskStepId" />
+            <PropertyRef Name="toolId" />
+          </Key>
+          <Property Name="taskStepId" Type="int" Nullable="false" />
+          <Property Name="toolId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TaskToDo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="dueDate" Type="date" />
+          <Property Name="isDone" Type="bit" Nullable="false" />
+          <Property Name="budgetEstimate" Type="decimal" Precision="19" Scale="4" />
+          <Property Name="categoryId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tool">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="alreadyGot" Type="bit" Nullable="false" />
+          <Property Name="supplier" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="cost" Type="decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <Association Name="fk_material_taskstep">
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="1" />
+          <End Role="Material" Type="Self.Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStep">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="taskStepId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_taskstep_task">
+          <End Role="TaskToDo" Type="Self.TaskToDo" Multiplicity="1" />
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskToDo">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskStep">
+              <PropertyRef Name="taskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tasksteptool_taskstep">
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="1" />
+          <End Role="TaskStepTool" Type="Self.TaskStepTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStep">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskStepTool">
+              <PropertyRef Name="taskStepId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tasksteptool_tool">
+          <End Role="Tool" Type="Self.Tool" Multiplicity="1" />
+          <End Role="TaskStepTool" Type="Self.TaskStepTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tool">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskStepTool">
+              <PropertyRef Name="toolId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tasktodo_category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="TaskToDo" Type="Self.TaskToDo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskToDo">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TaskListDatabaseModelStoreContainer">
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskStep" EntityType="Self.TaskStep" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskStepTool" EntityType="Self.TaskStepTool" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskToDo" EntityType="Self.TaskToDo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tool" EntityType="Self.Tool" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_material_taskstep" Association="Self.fk_material_taskstep">
+            <End Role="TaskStep" EntitySet="TaskStep" />
+            <End Role="Material" EntitySet="Material" />
+          </AssociationSet>
+          <AssociationSet Name="fk_taskstep_task" Association="Self.fk_taskstep_task">
+            <End Role="TaskToDo" EntitySet="TaskToDo" />
+            <End Role="TaskStep" EntitySet="TaskStep" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tasksteptool_taskstep" Association="Self.fk_tasksteptool_taskstep">
+            <End Role="TaskStep" EntitySet="TaskStep" />
+            <End Role="TaskStepTool" EntitySet="TaskStepTool" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tasksteptool_tool" Association="Self.fk_tasksteptool_tool">
+            <End Role="Tool" EntitySet="Tool" />
+            <End Role="TaskStepTool" EntitySet="TaskStepTool" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tasktodo_category" Association="Self.fk_tasktodo_category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="TaskToDo" EntitySet="TaskToDo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TaskListDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="TaskToDoes" Relationship="Self.fk_tasktodo_category" FromRole="Category" ToRole="TaskToDo" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="alreadyGot" Type="Boolean" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="taskStepId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TaskStep" Relationship="Self.fk_material_taskstep" FromRole="Material" ToRole="TaskStep" />
+        </EntityType>
+        <EntityType Name="TaskStep">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="timeRequired" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="isDone" Type="Boolean" Nullable="false" />
+          <Property Name="taskId" Type="Int32" Nullable="false" />
+          <Property Name="stepPriority" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Materials" Relationship="Self.fk_material_taskstep" FromRole="TaskStep" ToRole="Material" />
+          <NavigationProperty Name="TaskToDo" Relationship="Self.fk_taskstep_task" FromRole="TaskStep" ToRole="TaskToDo" />
+          <NavigationProperty Name="Tools" Relationship="Self.TaskStepTool" FromRole="TaskStep" ToRole="Tool" />
+        </EntityType>
+        <EntityType Name="TaskToDo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="dueDate" Type="DateTime" Precision="0" />
+          <Property Name="isDone" Type="Boolean" Nullable="false" />
+          <Property Name="budgetEstimate" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="categoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="Self.fk_tasktodo_category" FromRole="TaskToDo" ToRole="Category" />
+          <NavigationProperty Name="TaskSteps" Relationship="Self.fk_taskstep_task" FromRole="TaskToDo" ToRole="TaskStep" />
+        </EntityType>
+        <EntityType Name="Tool">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="alreadyGot" Type="Boolean" Nullable="false" />
+          <Property Name="supplier" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cost" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="TaskSteps" Relationship="Self.TaskStepTool" FromRole="Tool" ToRole="TaskStep" />
+        </EntityType>
+        <Association Name="fk_tasktodo_category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="TaskToDo" Type="Self.TaskToDo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskToDo">
+              <PropertyRef Name="categoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_material_taskstep">
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="1" />
+          <End Role="Material" Type="Self.Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskStep">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="taskStepId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_taskstep_task">
+          <End Role="TaskToDo" Type="Self.TaskToDo" Multiplicity="1" />
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TaskToDo">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TaskStep">
+              <PropertyRef Name="taskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TaskStepTool">
+          <End Role="TaskStep" Type="Self.TaskStep" Multiplicity="*" />
+          <End Role="Tool" Type="Self.Tool" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="TaskListDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Materials" EntityType="Self.Material" />
+          <EntitySet Name="TaskSteps" EntityType="Self.TaskStep" />
+          <EntitySet Name="TaskToDoes" EntityType="Self.TaskToDo" />
+          <EntitySet Name="Tools" EntityType="Self.Tool" />
+          <AssociationSet Name="fk_tasktodo_category" Association="Self.fk_tasktodo_category">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="TaskToDo" EntitySet="TaskToDoes" />
+          </AssociationSet>
+          <AssociationSet Name="fk_material_taskstep" Association="Self.fk_material_taskstep">
+            <End Role="TaskStep" EntitySet="TaskSteps" />
+            <End Role="Material" EntitySet="Materials" />
+          </AssociationSet>
+          <AssociationSet Name="fk_taskstep_task" Association="Self.fk_taskstep_task">
+            <End Role="TaskToDo" EntitySet="TaskToDoes" />
+            <End Role="TaskStep" EntitySet="TaskSteps" />
+          </AssociationSet>
+          <AssociationSet Name="TaskStepTool" Association="Self.TaskStepTool">
+            <End Role="TaskStep" EntitySet="TaskSteps" />
+            <End Role="Tool" EntitySet="Tools" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TaskListDatabaseModelStoreContainer" CdmEntityContainer="TaskListDatabaseEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="TaskListDatabaseModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Materials">
+            <EntityTypeMapping TypeName="TaskListDatabaseModel.Material">
+              <MappingFragment StoreEntitySet="Material">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="alreadyGot" ColumnName="alreadyGot" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="taskStepId" ColumnName="taskStepId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TaskSteps">
+            <EntityTypeMapping TypeName="TaskListDatabaseModel.TaskStep">
+              <MappingFragment StoreEntitySet="TaskStep">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="timeRequired" ColumnName="timeRequired" />
+                <ScalarProperty Name="isDone" ColumnName="isDone" />
+                <ScalarProperty Name="taskId" ColumnName="taskId" />
+                <ScalarProperty Name="stepPriority" ColumnName="stepPriority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TaskToDoes">
+            <EntityTypeMapping TypeName="TaskListDatabaseModel.TaskToDo">
+              <MappingFragment StoreEntitySet="TaskToDo">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="dueDate" ColumnName="dueDate" />
+                <ScalarProperty Name="isDone" ColumnName="isDone" />
+                <ScalarProperty Name="budgetEstimate" ColumnName="budgetEstimate" />
+                <ScalarProperty Name="categoryId" ColumnName="categoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tools">
+            <EntityTypeMapping TypeName="TaskListDatabaseModel.Tool">
+              <MappingFragment StoreEntitySet="Tool">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="alreadyGot" ColumnName="alreadyGot" />
+                <ScalarProperty Name="supplier" ColumnName="supplier" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="TaskStepTool" TypeName="TaskListDatabaseModel.TaskStepTool" StoreEntitySet="TaskStepTool">
+            <EndProperty Name="TaskStep">
+              <ScalarProperty Name="id" ColumnName="taskStepId" />
+            </EndProperty>
+            <EndProperty Name="Tool">
+              <ScalarProperty Name="id" ColumnName="toolId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

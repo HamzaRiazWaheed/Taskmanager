@@ -1,0 +1,66 @@
+﻿@model BananasAndPeaches.Models.TaskStep
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TaskStep</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.timeRequired)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.timeRequired)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.isDone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.isDone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.stepPriority)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.stepPriority)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaskToDo.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaskToDo.name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

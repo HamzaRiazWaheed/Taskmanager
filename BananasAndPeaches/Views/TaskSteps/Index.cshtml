@@ -1,0 +1,89 @@
+﻿@model IEnumerable<BananasAndPeaches.Models.TaskStep>
+
+@{
+    ViewBag.Title = "Index";
+    //int taskID;
+    //if (Model != null)
+    //{
+    //    taskID = ;
+    //}
+    //else
+    //{
+    //    taskID = ViewBag.tasktodoID;
+    //}
+    }
+
+<h2>Index</h2>
+
+@*<p>
+    @Html.ActionLink("Add a New Task step", "Create", new { id =  }, null)
+</p>*@
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.timeRequired)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.isDone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.stepPriority)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TaskToDo.name)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model=> model.Materials)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Tools)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.timeRequired)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.isDone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.stepPriority)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TaskToDo.name)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem=> item.Materials)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem=> item.Tools)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id }) 
+           @* @Html.ActionLink("Add Material", "Create", "Materials", new { id = item.id }, null)*@
+        </td>
+    </tr>
+}
+</table>
+@*<div>
+    @Html.ActionLink("Add a New Task step", "Create" ,new {id = ViewBag.tasktodoID}, null)
+</div*@
+<div>
+    @Html.ActionLink("Your Tasks", "Index", "TaskToDoes")
+</div>
